@@ -7,12 +7,37 @@
     <title>react-project</title>
     <script>
       (() => {
-        const stored = localStorage.getItem("theme")
-        const dark =
-          stored === "dark" ||
-          (stored !== "light" &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches)
-        document.documentElement.classList.toggle("dark", dark)
+        const root = document.documentElement
+        const stored = localStorage.getItem("tweakcn-theme")
+        let theme =
+          stored ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "default-dark"
+            : "default-light")
+
+        let imported = null
+        try {
+          imported = JSON.parse(
+            localStorage.getItem("tweakcn-imported-theme") || "null",
+          )
+        } catch {}
+
+        const mode = theme.endsWith("-light") ? "light" : "dark"
+
+        if (imported && imported.cssVars && imported.cssVars[mode]) {
+          theme = "imported-" + mode
+          const vars = Object.assign(
+            {},
+            imported.cssVars.theme || {},
+            imported.cssVars[mode],
+          )
+          for (const key of Object.keys(vars)) {
+            root.style.setProperty("--" + key, vars[key])
+          }
+        }
+
+        root.setAttribute("data-theme", theme)
+        root.classList.toggle("dark", mode === "dark")
       })()
     </script>
   </head>

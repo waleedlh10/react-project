@@ -1,5 +1,7 @@
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom"
-import { ThemeToggle } from "./components/ThemeToggle"
+import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeSwitcher } from "@/components/theme-switcher"
+import { ThemeUrlApply } from "@/components/ThemeUrlApply"
 import Dashboard from "./pages/Dashboard"
 
 function DashboardLayout() {
@@ -7,7 +9,7 @@ function DashboardLayout() {
     <div className="min-h-svh bg-background">
       <header className="border-b border-border">
         <div className="flex h-14 items-center justify-between gap-4 px-4">
-          <nav className="flex items-center gap-1" aria-label="Main">
+          <nav className="flex shrink-0 items-center gap-1" aria-label="Main">
             <NavLink
               to="/"
               end
@@ -23,7 +25,10 @@ function DashboardLayout() {
               Dashboard
             </NavLink>
           </nav>
-          <ThemeToggle />
+          <div className="flex min-w-0 flex-1 items-start justify-end gap-2">
+            <ThemeUrlApply />
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
       <main>
@@ -35,11 +40,13 @@ function DashboardLayout() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DashboardLayout />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<DashboardLayout />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 
